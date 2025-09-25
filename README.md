@@ -1,2 +1,2 @@
 # leaflet-inaturalist-lariver-map
-first attempt at creating an interactive map where I can place inaturalist data for the LA River
+An interactive map of LA River iNaturalist data south of the 91 Hwy.

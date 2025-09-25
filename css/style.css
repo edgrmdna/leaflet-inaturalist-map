@@ -23,7 +23,7 @@ body {
 	padding:10px;
 	background-color: #333;
 	color: white;
-	font-size: 2em;
+	font-size: 1.5em;
 }
 
 .content {
@@ -32,6 +32,13 @@ body {
 
 .footer {
 	grid-area: footer;
-	padding:10px;
+	padding:3px;
 	background-color: rgb(175, 175, 175);
+	font-size: 0.75em;
+}
+.sidebar-item {
+    padding: 10px; /* adds inner padding */
+    background: gainsboro; /* background color */
+    border: 1px solid gray; /* border width, style, and color */
+    margin: 5px; /* outer padding */
 }
