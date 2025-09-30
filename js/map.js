@@ -1,5 +1,3 @@
-//imports
-//import Papa from 'papaparse';
 // Global variables
 let map;
 // CSV Container
@@ -8,62 +6,58 @@ let markers = L.featureGroup();
 // initialize
 $( document ).ready(function() {
     createMap();
-	//readCSV(path)
 });
+
+$('.sidebar').append('<div class="sidebar-item">'+"Animalia"+'</div>')
+$('.sidebar').append('<div class="sidebar-item">'+"Plantae"+'</div>')
+$('.sidebar').append('<div class="sidebar-item">'+"Fungi"+'</div>');
 
 // create the map
 function createMap(){
-	map = L.map('map').setView([33.80100,-118.205], 13);
+	map = L.map('map').setView([33.80100,-118.198], 12);
 
 	//L.tileLayer('https://api.mapbox.com/styles/v1/edgrmdna/cj0vm58cc00c32rnyk5c7xohw/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiZWRncm1kbmEiLCJhIjoiRV8wRG1URSJ9.-Gjqcw0AmLxIaGP10UuGqg ', 
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',	
 		{ attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 	}).addTo(map);
-}
+};
 
-/*
-// function to read csv data
-function readCSV(){
-		Papa.parse(path, {
-		header: true,
-		download: true,
-		complete: function(data) {
-			console.log(data);
-			
-			// map the data
-			mapCSV(data);
-
-		}
-	});
-}
-*/
-/*
-function mapCSV(data){
-	
-	// circle options
-	let circleOptions = {
-		radius: 5,
-		weight: 1,
-		color: 'grey',
-		fillColor: 'red',
-		fillOpacity: 1
+// pop up function
+function onEachFeature(feature, layer) {
+	// 
+	if(feature.properties.eventDate && feature.properties.scientificName && feature.properties.identifier) {
+		layer.bindPopup("Scientific Name: " + feature.properties.scientificName+ "\n"+ 
+			"\nIdentified by: " + feature.properties.identifiedBy + "\n" + 
+			"\nLocation: " + feature.properties.verbatimLocality + "\n" + 
+			"\nLatitude: " + feature.properties.decimalLatitude + "\n" +
+			"\nLongitude: " + feature.properties.decimalLongitude + "\n" +
+			"<img src='" + feature.properties.identifier +"' height='300px' width='300px'/>"
+		);
+		//feature.unbindPopup();
+		//uncomment the above line and pipe all of the content into the sidebar
 	}
-
-	// loop through each entry
-	data.data.forEach(function(item,index){
-		// create marker
-		let marker = L.circleMarker([item.latitude,item.longitude],circleOptions)
-
-		// add marker to featuregroup		
-		markers.addLayer(marker)
-	})
-
-	// add featuregroup to map
-	markers.addTo(map)
-
-	// fit markers to map
-	map.fitBounds(markers.getBounds())
 }
+
+// Heatmap
+// Saving for later
+/*
+$.get('./data/occurences.csv', function(csvString) {
+
+      // Use PapaParse to transform file into arrays
+      var data = Papa.parse(csvString.trim()).data.filter(
+        function(row) { return row.length === 2 }
+      ).map(function(a) {
+        return [ parseFloat(a[0]), parseFloat(a[1]) ]
+      })
+
+      // Add all points into a heat layer
+      var heat = L.heatLayer(data, {
+        radius: 25
+      })
+
+      // Add the heatlayer to the map
+      heat.addTo(map)
+    })
 */
 
 async function addExternalGeoJson() {
@@ -77,7 +71,7 @@ addExternalGeoJson();
 
 // Plant symbols:
 var plantMarkerOptions = {
-        radius: 8,
+        radius: 4,
         fillColor: "#57DE79",
         color: "#000",
         weight: 1,
@@ -91,14 +85,15 @@ async function addPlantGeoJson(){
 	L.geoJSON(data_plant, {
 		pointToLayer: function (feature, latlng) {
 			return L.circleMarker(latlng, plantMarkerOptions);
-		}
+		}, 
+		onEachFeature: onEachFeature
 	}).addTo(map);
 }
 addPlantGeoJson();
 
 // Animal symbols:
 var animalMarkerOptions = {
-        radius: 8,
+        radius: 4,
         fillColor: "#F77259",
         color: "#000",
         weight: 1,
@@ -112,14 +107,15 @@ async function addAnimalGeoJson(){
 	L.geoJSON(data_plant, {
 		pointToLayer:  function (feature, latlng) {
 			return L.circleMarker(latlng, animalMarkerOptions);
-		}
+		},
+		onEachFeature: onEachFeature
 	}).addTo(map);
 }
 addAnimalGeoJson();
 
 // Plant symbols:
 var fungiMarkerOptions = {
-        radius: 8,
+        radius: 4,
         fillColor: "#8C6E41",
         color: "#000",
         weight: 1,
@@ -132,7 +128,8 @@ async function addFungiGeoJson(){
 	L.geoJSON(data_plant, {
 		pointToLayer: function (feature, latlng) {
 			return L.circleMarker(latlng, fungiMarkerOptions);
-		}
+		},
+		onEachFeature: onEachFeature
 	}).addTo(map);
 }
 addFungiGeoJson();
