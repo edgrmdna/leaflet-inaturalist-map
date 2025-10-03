@@ -1,72 +1,80 @@
 // Global variables
 let map;
 // CSV Container
-let markers = L.featureGroup();
-
+//let markers = L.featureGroup();
+let plantMarkers = L.featureGroup();
 // initialize
 $( document ).ready(function() {
     createMap();
-});
-
-$('.sidebar').append('<div class="sidebar-item">'+"Animalia"+'</div>')
-$('.sidebar').append('<div class="sidebar-item">'+"Plantae"+'</div>')
-$('.sidebar').append('<div class="sidebar-item">'+"Fungi"+'</div>');
+})
 
 // create the map
 function createMap(){
 	map = L.map('map').setView([33.80100,-118.198], 12);
 
-	//L.tileLayer('https://api.mapbox.com/styles/v1/edgrmdna/cj0vm58cc00c32rnyk5c7xohw/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiZWRncm1kbmEiLCJhIjoiRV8wRG1URSJ9.-Gjqcw0AmLxIaGP10UuGqg ', 
-	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',	
+	L.tileLayer('https://api.mapbox.com/styles/v1/edgrmdna/cj0vm58cc00c32rnyk5c7xohw/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiZWRncm1kbmEiLCJhIjoiRV8wRG1URSJ9.-Gjqcw0AmLxIaGP10UuGqg ', 
+	//L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',	
 		{ attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 	}).addTo(map);
 };
+/*
+// On Each feature alternative
+    function onEachFeature(feature, layer) {
+        if(feature.properties.eventDate && feature.properties.scientificName && feature.properties.identifier) {
+			scientificName = feature.properties.scientificName;
+			identifiedBy = feature.properties.identifiedBy;
+			verbatimLocality = feature.properties.verbatimLocality;
+			decimalLatitude = feature.properties.decimalLatitude;
+			decimalLongitude = feature.properties.decimalLongitudel;
+			identifierPerson = feature.properties.identifier;
+
+			description = "Identified by: " + identifiedBy + "\n" + 
+			"\nLocation: " + verbatimLocality + "\n" + 
+			"\nLatitude: " + decimalLatitude + "\n" +
+			"\nLongitude: " + decimalLongitude + "\n" +
+			"<img src='" + identifierPerson +"' height='275px' width='275px'/>"
+
+            const sidebarContent = '<h2>${scientificName}</h2><p>${description}</p>';
+            // Instead of binding a popup, set up a click listener
+            layer.on('click', function() {
+				//$('.sidebar').empty();
+				//document.getElementsByClassName('sidebar-item').innerHTML = sidebarContent;
+				$('.sidebar').append('<div class="sidebar-item">'+description+'</div>');
+
+			});
+        }
+    }
+		*/
 
 // pop up function
 function onEachFeature(feature, layer) {
 	// 
 	if(feature.properties.eventDate && feature.properties.scientificName && feature.properties.identifier) {
-		layer.bindPopup("Scientific Name: " + feature.properties.scientificName+ "\n"+ 
-			"\nIdentified by: " + feature.properties.identifiedBy + "\n" + 
-			"\nLocation: " + feature.properties.verbatimLocality + "\n" + 
-			"\nLatitude: " + feature.properties.decimalLatitude + "\n" +
-			"\nLongitude: " + feature.properties.decimalLongitude + "\n" +
-			"<img src='" + feature.properties.identifier +"' height='300px' width='300px'/>"
+		scientificName = feature.properties.scientificName;
+		identifiedBy = feature.properties.identifiedBy;
+		verbatimLocality = feature.properties.verbatimLocality;
+		decimalLatitude = feature.properties.decimalLatitude;
+		decimalLongitude = feature.properties.decimalLongitudel;
+		identifierPerson = feature.properties.identifier;
+
+		layer.bindPopup("<b>Scientific Name: </b>" + scientificName+ "\n"+ 
+			"<br><b>Identified by: </b>" + identifiedBy + 
+			"<br><b>Location: </b>" + verbatimLocality + 
+			"<br><b>Latitude: </b>" + decimalLatitude +
+			"<br><b>Longitude: </b>" + decimalLongitude +
+			"<img src='" + identifierPerson +"' height='300px' width='300px'/>"
 		);
-		//feature.unbindPopup();
-		//uncomment the above line and pipe all of the content into the sidebar
 	}
+	//$('.sidebar').append('<div class="sidebar-item">'+scientificName+'</div>');
 }
+	
 
-// Heatmap
-// Saving for later
-/*
-$.get('./data/occurences.csv', function(csvString) {
-
-      // Use PapaParse to transform file into arrays
-      var data = Papa.parse(csvString.trim()).data.filter(
-        function(row) { return row.length === 2 }
-      ).map(function(a) {
-        return [ parseFloat(a[0]), parseFloat(a[1]) ]
-      })
-
-      // Add all points into a heat layer
-      var heat = L.heatLayer(data, {
-        radius: 25
-      })
-
-      // Add the heatlayer to the map
-      heat.addTo(map)
-    })
-*/
-
+// LA River Boundary Buffer Layer
 async function addExternalGeoJson() {
     const response = await fetch("data/boundary.geojson");
     const data = await response.json();
     L.geoJSON(data).addTo(map);
-	L.geoJSON()
-
-}
+};
 addExternalGeoJson();
 
 // Plant symbols:
@@ -79,17 +87,17 @@ var plantMarkerOptions = {
         fillOpacity: 0.8
     };
 
+// Add Plant Geojson
 async function addPlantGeoJson(){
 	const response = await fetch("data/Plantae_Kingdom.geojson");
 	const data_plant = await response.json();
-	L.geoJSON(data_plant, {
+	var plants = L.geoJSON(data_plant, {
 		pointToLayer: function (feature, latlng) {
 			return L.circleMarker(latlng, plantMarkerOptions);
 		}, 
 		onEachFeature: onEachFeature
 	}).addTo(map);
-}
-addPlantGeoJson();
+};
 
 // Animal symbols:
 var animalMarkerOptions = {
@@ -101,17 +109,18 @@ var animalMarkerOptions = {
         fillOpacity: 0.8
     };
 
+// Add Animal Geojson
 async function addAnimalGeoJson(){
 	const response = await fetch("data/Animalia_Kingdom.geojson");
-	const data_plant = await response.json();
-	L.geoJSON(data_plant, {
+	const animal = await response.json();
+	L.geoJSON(animal, {
 		pointToLayer:  function (feature, latlng) {
 			return L.circleMarker(latlng, animalMarkerOptions);
 		},
 		onEachFeature: onEachFeature
 	}).addTo(map);
-}
-addAnimalGeoJson();
+};
+//addAnimalGeoJson();
 
 // Plant symbols:
 var fungiMarkerOptions = {
@@ -122,14 +131,29 @@ var fungiMarkerOptions = {
         opacity: 0.45,
         fillOpacity: 0.8
     };
+
+// Add Fungi Geojson
 async function addFungiGeoJson(){
 	const response = await fetch("data/Fungi_Kingdom.geojson");
-	const data_plant = await response.json();
-	L.geoJSON(data_plant, {
+	const fungi = await response.json();
+	overlay = L.geoJSON(fungi, {
 		pointToLayer: function (feature, latlng) {
 			return L.circleMarker(latlng, fungiMarkerOptions);
 		},
 		onEachFeature: onEachFeature
 	}).addTo(map);
 }
-addFungiGeoJson();
+
+// Add geojsons to dictionary
+//var animalGeojson = addAnimalGeoJson();
+var plantGeojson = addPlantGeoJson();
+var fungiGeojson = addFungiGeoJson();
+
+var layersByKingdom = {
+	"Animals" : animalGeojson,
+	"Plants" : plantGeojson,
+	"Fungi" : fungiGeojson
+};
+
+// Layer Control
+//var control = L.control.layers(plantGeojson).addTo(map);

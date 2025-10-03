@@ -7,9 +7,12 @@
 	<!-- JQuery -->
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 	<!-- style sheets -->
-	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/style.css"/>
     <!-- leaflet css-->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+	<!-- Basemap Controls-->
+	 <link rel="stylesheet" href="css/L.basemapControl.min.css">
+	<script src="js/L.basemapControl.min.js"></script>
 	<!-- ajax -->
 	<script src="path/to/leaflet.ajax.min.js"></script>
 	<!-- leaflet heatmap-->
@@ -20,11 +23,20 @@
 <body>
 
 	<div class="header">
-		Los Angeles River iNaturalist Observations
+		Los Angeles River Plant and Fungi iNaturalist Observations
+		
 	</div>
+	<!--
 	<div class="sidebar">
-		Filters
+		-- Click on a point in the map to see its data --
+		<br>Scientific Name: </br>
+		<br>Location: </br>
+		<br>Identified by: </br>
+		<br>Image: </br>
+		<br>Latitude </br>
+		<br>Longitude: </br>
 	</div>
+	-->
 	<div class="content">
 		<div id="map"></div>
 	</div>
