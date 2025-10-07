@@ -54,7 +54,7 @@ function onEachFeature(feature, layer) {
 		identifiedBy = feature.properties.identifiedBy;
 		verbatimLocality = feature.properties.verbatimLocality;
 		decimalLatitude = feature.properties.decimalLatitude;
-		decimalLongitude = feature.properties.decimalLongitudel;
+		decimalLongitude = feature.properties.decimalLongitude;
 		identifierPerson = feature.properties.identifier;
 
 		layer.bindPopup("<b>Scientific Name: </b>" + scientificName+ "\n"+ 
