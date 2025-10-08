@@ -1,50 +1,97 @@
+/*
+** To Do **
+1. Add a pie chart for species based on the scientific or common name?
+2. Move the attributes over to the sidebar
+3. Add a subset map based on an image to the sidebar
+4. Add the layers list to the map to toggle on and off
+*/
+
 // Global variables
 let map;
-// CSV Container
-//let markers = L.featureGroup();
-let plantMarkers = L.featureGroup();
-// initialize
-$( document ).ready(function() {
+let currentHighlightedLayer = null; // Track the currently highlighted marker
+
+// Initialize
+$(document).ready(function() {
     createMap();
 })
 
-// create the map
+// Create the map
 function createMap(){
 	map = L.map('map').setView([33.80100,-118.198], 12);
 
-	L.tileLayer('https://api.mapbox.com/styles/v1/edgrmdna/cj0vm58cc00c32rnyk5c7xohw/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiZWRncm1kbmEiLCJhIjoiRV8wRG1URSJ9.-Gjqcw0AmLxIaGP10UuGqg ', 
-	//L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',	
+	//L.tileLayer('https://api.mapbox.com/styles/v1/edgrmdna/cj0vm58cc00c32rnyk5c7xohw/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiZWRncm1kbmEiLCJhIjoiRV8wRG1URSJ9.-Gjqcw0AmLxIaGP10UuGqg ', 
+	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',	
 		{ attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 	}).addTo(map);
 };
-/*
-// On Each feature alternative
-    function onEachFeature(feature, layer) {
-        if(feature.properties.eventDate && feature.properties.scientificName && feature.properties.identifier) {
-			scientificName = feature.properties.scientificName;
-			identifiedBy = feature.properties.identifiedBy;
-			verbatimLocality = feature.properties.verbatimLocality;
-			decimalLatitude = feature.properties.decimalLatitude;
-			decimalLongitude = feature.properties.decimalLongitudel;
-			identifierPerson = feature.properties.identifier;
+// Click handler function for markers
+function onEachFeature(feature, layer) {
+    if(feature.properties.eventDate && feature.properties.scientificName && feature.properties.identifier) {
+        const scientificName = feature.properties.verbatimScientificName;
+        const identifiedBy = feature.properties.identifiedBy;
+        const verbatimLocality = feature.properties.verbatimLocality;
+		const dateIdentified = feature.properties.dateIdentified;
+        const decimalLatitude = feature.properties.decimalLatitude;
+        const decimalLongitude = feature.properties.decimalLongitude;
+        const identifierPerson = feature.properties.identifier;
+		const occurenceRemarks = feature.properties.occurrenceRemarks;
+		var occurenceRemarks2 = String(occurenceRemarks).replace("null", "None");
 
-			description = "Identified by: " + identifiedBy + "\n" + 
-			"\nLocation: " + verbatimLocality + "\n" + 
-			"\nLatitude: " + decimalLatitude + "\n" +
-			"\nLongitude: " + decimalLongitude + "\n" +
-			"<img src='" + identifierPerson +"' height='275px' width='275px'/>"
+        // Add click event to update sidebar and highlight marker
+        layer.on('click', function(e) {
+            // Reset previous highlighted marker
+            if (currentHighlightedLayer) {
+                currentHighlightedLayer.setStyle(currentHighlightedLayer.originalStyle);
+            }
 
-            const sidebarContent = '<h2>${scientificName}</h2><p>${description}</p>';
-            // Instead of binding a popup, set up a click listener
-            layer.on('click', function() {
-				//$('.sidebar').empty();
-				//document.getElementsByClassName('sidebar-item').innerHTML = sidebarContent;
-				$('.sidebar').append('<div class="sidebar-item">'+description+'</div>');
+            // Store original style and highlight current marker
+            if (!layer.originalStyle) {
+                layer.originalStyle = {
+                    radius: layer.options.radius,
+                    fillColor: layer.options.fillColor,
+                    color: layer.options.color,
+                    weight: layer.options.weight,
+                    opacity: layer.options.opacity,
+                    fillOpacity: layer.options.fillOpacity
+                };
+            }
 
-			});
-        }
+            // Highlight the clicked marker
+            layer.setStyle({
+                radius: 8,
+                fillColor: '#CFC865',
+                color: '#FF0000',
+                weight: 3,
+                opacity: 0.4,
+                fillOpacity: 1
+            });
+
+            // Update the current highlighted layer
+            currentHighlightedLayer = layer;
+
+            // Update sidebar content
+            const sidebarContent = `
+                <div class="sidebar-item">
+                    <h3>${scientificName}</h3>
+                    <br><b>Identified by:</b> ${identifiedBy}
+					<br><b>Identification Date: </b>${dateIdentified}
+                    <br><b>Location:</b> ${verbatimLocality}
+                    <br><b>Latitude:</b> ${decimalLatitude}
+                    <br><b>Longitude:</b> ${decimalLongitude}
+                    <img src="${identifierPerson}" style="max-width: 100%; height: auto; margin-top: 10px;"/>
+					<br><b>Occurence Remarks: </b> ${occurenceRemarks2}
+                </div>
+            `;
+
+            // Clear and update sidebar
+            $('.sidebar').html(sidebarContent);
+
+            // Prevent event from bubbling to map
+            L.DomEvent.stopPropagation(e);
+        });
     }
-		*/
+}
+/*
 
 // pop up function
 function onEachFeature(feature, layer) {
@@ -68,6 +115,7 @@ function onEachFeature(feature, layer) {
 	//$('.sidebar').append('<div class="sidebar-item">'+scientificName+'</div>');
 }
 	
+*/
 
 // LA River Boundary Buffer Layer
 async function addExternalGeoJson() {
@@ -154,6 +202,3 @@ var layersByKingdom = {
 	"Plants" : plantGeojson,
 	"Fungi" : fungiGeojson
 };
-
-// Layer Control
-//var control = L.control.layers(plantGeojson).addTo(map);

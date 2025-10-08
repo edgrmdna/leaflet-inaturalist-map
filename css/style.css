@@ -14,8 +14,8 @@ body {
 	grid-template-columns: 300px 1fr;
 	grid-template-areas: 
 	"header header"
-	/*"sidebar content"*/
-	"content content"
+	"sidebar content"
+	/*"content content"*/
 	"footer footer";
 }
 
@@ -45,9 +45,22 @@ body {
 	font-size: 0.75em;
 }
 .sidebar-item {
-    padding: 10px; /* adds inner padding */
-    background: rgb(190, 186, 186); /* background color */
-    border: 1px solid rgb(59, 59, 59); /* border width, style, and color */
+    padding: 5px; /* adds inner padding */
+    background: rgb(223, 221, 221); /* background color */
+    border: 0.5	px solid rgb(59, 59, 59); /* border width, style, and color */
 	font-family: "Arial", Arial, serif;
     margin: 5px; /* outer padding */
+}
+.sidebar {
+  position: absolute;
+  top: 100px;
+  left: 10px;
+  width: 250px;
+  background: rgb(224, 222, 222);
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 6px 6px rgba(0,0,0,0.2);
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: 1000;
 }
