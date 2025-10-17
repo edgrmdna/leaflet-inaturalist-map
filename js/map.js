@@ -25,7 +25,7 @@ $(document).ready(function() {
 
 // Create the map
 function createMap(){
-    map = L.map('map').setView([33.80100,-118.198], 12);
+    map = L.map('map').setView([33.96500,-118.300], 11);
 
     L.tileLayer('https://api.mapbox.com/styles/v1/edgrmdna/cj0vm58cc00c32rnyk5c7xohw/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiZWRncm1kbmEiLCJhIjoiRV8wRG1URSJ9.-Gjqcw0AmLxIaGP10UuGqg ', 
     //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',    
@@ -190,7 +190,7 @@ function onEachFeature(feature, layer) {
 
 // LA River Boundary Buffer Layer
 async function addExternalGeoJson() {
-    const response = await fetch("data/boundary.geojson");
+    const response = await fetch("data/los-angeles-river-boundary.geojson");
     const data = await response.json();
     const boundaryLayer = L.geoJSON(data, {
         style: {
