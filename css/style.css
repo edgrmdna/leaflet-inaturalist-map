@@ -64,3 +64,20 @@ body {
   overflow-y: auto;
   z-index: 1000;
 }
+
+.sidebar-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sidebar-item {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sidebar-static-image {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+}
