@@ -45,11 +45,11 @@ body {
 	font-size: 0.75em;
 }
 .sidebar-item {
-    padding: 5px; /* adds inner padding */
+    padding: 2px; /* adds inner padding */
     background: rgb(223, 221, 221); /* background color */
     border: 0.5	px solid rgb(59, 59, 59); /* border width, style, and color */
 	font-family: "Arial", Arial, serif;
-    margin: 5px; /* outer padding */
+    margin: 2px; /* outer padding */
 }
 .sidebar {
   position: absolute;

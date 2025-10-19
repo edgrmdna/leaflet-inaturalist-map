@@ -27,8 +27,8 @@ $(document).ready(function() {
 function createMap(){
     map = L.map('map').setView([33.96500,-118.300], 11);
 
-    L.tileLayer('https://api.mapbox.com/styles/v1/edgrmdna/cj0vm58cc00c32rnyk5c7xohw/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiZWRncm1kbmEiLCJhIjoiRV8wRG1URSJ9.-Gjqcw0AmLxIaGP10UuGqg ', 
-    //L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',    
+    //L.tileLayer('https://api.mapbox.com/styles/v1/edgrmdna/cj0vm58cc00c32rnyk5c7xohw/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiZWRncm1kbmEiLCJhIjoiRV8wRG1URSJ9.-Gjqcw0AmLxIaGP10UuGqg ', 
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',    
         { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
 };
@@ -100,10 +100,7 @@ function updateSidebarWithChart() {
             <h3>Species Distribution</h3>
             ${chartHTML}
             <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
-            <p style="color: #666; font-style: italic;">Click on a marker to view details</p>
-            <div class="sidebar-static-image">
-                <img src="path/to/your/image.jpg" alt="Static Image" style="max-width: 100%; height: auto;"/>
-            </div>
+            <p style="color: #777; font-style: italic;">Click on a marker to view details</p>
         </div>
     `);
 }
@@ -117,6 +114,8 @@ function onEachFeature(feature, layer) {
         const decimalLatitude = feature.properties.decimalLatitude;
         const decimalLongitude = feature.properties.decimalLongitude;
         const identifierPerson = feature.properties.identifier;
+        var occurenceRemarks = feature.properties.occurenceRemarks;
+        if (occurenceRemarks == null){occurenceRemarks = "None"};
 
         // Add click event to update sidebar and highlight marker
         layer.on('click', function(e) {
@@ -163,7 +162,7 @@ function onEachFeature(feature, layer) {
                 <div class="sidebar-content">
                     <h3>Species Distribution</h3>
                     ${chartHTML}
-                    <hr style="margin: 20px 0; border: none; border-top: 1px solid #ddd;">
+                    <hr style="margin: 25px 0; border: none; border-top: 1px solid #ddd;">
                     <div class="sidebar-item">
                     _______________________
                         <h3>${scientificName}</h3>
@@ -172,12 +171,15 @@ function onEachFeature(feature, layer) {
                         <p><b>Latitude:</b> ${decimalLatitude}</p>
                         <p><b>Longitude:</b> ${decimalLongitude}</p>
                         <img src="${identifierPerson}" style="max-width: 100%; height: auto; margin-top: 10px;"/>
-                    </div>
-                    <div class="sidebar-static-image">
-                        <img src="path/to/your/image.jpg" alt="Static Image" style="max-width: 100%; height: auto;"/>
+                        <p><b>Occurence Remarks:</b> ${occurenceRemarks}</p>
                     </div>
                 </div>
             `;
+            /*
+            <div class="sidebar-static-image">
+                        <img src="images/ExtentMap.png" alt="Static Image" style="max-width: 100%; height: auto;"/>
+                    </div>
+                    */
 
             // Clear and update sidebar
             $('.sidebar').html(sidebarContent);
